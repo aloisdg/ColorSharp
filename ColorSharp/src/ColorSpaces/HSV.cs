@@ -101,7 +101,7 @@ namespace Litipk.ColorSharp
             */
             public override CIEXYZ ToCIEXYZ()
             {
-                return ToSRGB().ToCIEXYZ();
+                return ToSRGB ().ToCIEXYZ ();
             }
 
             /**
@@ -125,34 +125,34 @@ namespace Litipk.ColorSharp
                     if (h >= 1)
                         h = 0;
                     h *= 6;
-                    int hueFloor = Convert.ToInt32(Math.Floor(h));
-                    byte a = (byte)Math.Round(255 * v * (1.0 - s));
-                    byte b = (byte)Math.Round(255 * v * (1.0 - (s * (h - hueFloor))));
-                    byte c = (byte)Math.Round(255 * v * (1.0 - (s * (1.0 - (h - hueFloor)))));
-                    byte d = (byte)Math.Round(255 * v);
+                    int hueFloor = Convert.ToInt32 (Math.Floor (h));
+                    byte a = ConvertToByte (v * (1.0 - s));
+                    byte b = ConvertToByte (v * (1.0 - (s * (h - hueFloor))));
+                    byte c = ConvertToByte (v * (1.0 - (s * (1.0 - (h - hueFloor)))));
+                    byte d = ConvertToByte (v);
 
                     switch (hueFloor)
                     {
-                        case 0: return new SRGB(d, c, a);
-                        case 1: return new SRGB(b, d, a);
-                        case 2: return new SRGB(a, d, c);
-                        case 3: return new SRGB(a, b, d);
-                        case 4: return new SRGB(c, a, d);
-                        case 5: return new SRGB(d, a, b);
-                        default: return new SRGB(0, 0, 0);
+                        case 0: return new SRGB (d, c, a);
+                        case 1: return new SRGB (b, d, a);
+                        case 2: return new SRGB (a, d, c);
+                        case 3: return new SRGB (a, b, d);
+                        case 4: return new SRGB (c, a, d);
+                        case 5: return new SRGB (d, a, b);
+                        default: return new SRGB (0, 0, 0);
                     }
                 }
                 else
                 {
-                    byte d = (byte)(v * 255);
-                    return new SRGB(d, d, d);
+                    byte d = (byte) (v * 255);
+                    return new SRGB (d, d, d);
                 }
             }
 
             /**
              * <inheritdoc />
              */
-            public HSV ToHSV(ToSmallSpaceStrategy strategy = ToSmallSpaceStrategy.Default)
+            public HSV ToHSV()
             {
                 return this;
             }
@@ -191,6 +191,15 @@ namespace Litipk.ColorSharp
                 hash = hash * 181 + S.GetHashCode();
 
                 return hash * 181 + V.GetHashCode();
+            }
+
+            #endregion
+
+            #region internal utilities
+            
+            static byte ConvertToByte(double num)
+            {
+                return (byte) Math.Round(255*num);
             }
 
             #endregion

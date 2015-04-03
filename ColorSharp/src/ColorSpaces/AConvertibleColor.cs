@@ -114,6 +114,8 @@ namespace Litipk.ColorSharp
 					return ToSRGB ();
 				if (t == typeof(LMS))
 					return ToLMS ();
+                if (t == typeof(HSV))
+                    return ToHSV ();
 
 				throw new NotImplementedException ("This conversion isn't implemented.");
 			}
@@ -195,6 +197,14 @@ namespace Litipk.ColorSharp
 			{
 				return (DataSource as SRGB) ?? ToCIEXYZ ().ToSRGB (strategy);
 			}
+
+            /**
+             * <summary>Converts the color sample to a CIE's 1931 xyY color sample.</summary>
+             */
+            public virtual HSV ToHSV()
+            {
+                return (DataSource as HSV) ?? ToCIEXYZ ().ToHSV ();
+            }
 
 			#endregion
 		}

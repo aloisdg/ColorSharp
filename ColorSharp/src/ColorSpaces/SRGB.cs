@@ -34,135 +34,177 @@ using Litipk.ColorSharp.Strategies;
 
 namespace Litipk.ColorSharp
 {
-	namespace ColorSpaces
-	{
-		/**
-		 * <summary>HP's and Microsoft's 1996 sRGB Color Space.</summary>
-		 */
-		public sealed class SRGB : AConvertibleColor
-		{
-			#region private properties
+    namespace ColorSpaces
+    {
+        /**
+         * <summary>HP's and Microsoft's 1996 sRGB Color Space.</summary>
+         */
+        public sealed class SRGB : AConvertibleColor
+        {
+            #region private properties
 
-			/**
+            /**
 			 * <value>Red component</value>
 			 */
-			public readonly double R;
+            public readonly double R;
 
-			/**
-			 * <value>Green component</value>
-			 */
-			public readonly double G;
+            /**
+             * <value>Green component</value>
+             */
+            public readonly double G;
 
-			/**
-			 * <value>Blue component</value>
-			 */
-			public readonly double B;
+            /**
+             * <value>Blue component</value>
+             */
+            public readonly double B;
 
-			#endregion
+            #endregion
 
 
-			#region constructors
+            #region constructors
 
-			/**
+            /**
 			 * <summary>Creates a new color sample in the sRGB color space</summary>
 			 * <param name="R">Red component (between 0 and 1)</param>
 			 * <param name="G">Green component (between 0 and 1)</param>
 			 * <param name="B">Blue component (between 0 and 1)</param>
 			 * <param name="dataSource">If you aren't working with ColorSharp internals, don't use this parameter</param>
 			 */
-			public SRGB (double R, double G, double B, AConvertibleColor dataSource=null) : base(dataSource)
-			{
-				this.R = R;
-				this.G = G;
-				this.B = B;
-			}
+            public SRGB(double R, double G, double B, AConvertibleColor dataSource = null)
+                : base(dataSource)
+            {
+                this.R = R;
+                this.G = G;
+                this.B = B;
+            }
 
-			#endregion
+            #endregion
 
 
-			#region AConvertibleColor methods
+            #region AConvertibleColor methods
 
-			/**
+            /**
 			 * <inheritdoc />
 			 */
-			public override bool IsInsideColorSpace(bool highPrecision = false)
-			{
-				return (
-					0.0 <= R && R <= 1.0 &&
-					0.0 <= G && B <= 1.0 &&
-					0.0 <= B && B <= 1.0
-				);
-			}
+            public override bool IsInsideColorSpace(bool highPrecision = false)
+            {
+                return (
+                    0.0 <= R && R <= 1.0 &&
+                    0.0 <= G && B <= 1.0 &&
+                    0.0 <= B && B <= 1.0
+                );
+            }
 
-			/**
+            /**
+             * <inheritdoc />
+             */
+            public override CIEXYZ ToCIEXYZ()
+            {
+                CIEXYZ xyzDS = DataSource as CIEXYZ;
+                if (xyzDS != null)
+                {
+                    return xyzDS;
+                }
+
+                // Gamma correction
+                double r = R > 0.04045 ? Math.Pow((R + 0.055) / 1.055, 2.4) : R / 12.92;
+                double g = G > 0.04045 ? Math.Pow((G + 0.055) / 1.055, 2.4) : G / 12.92;
+                double b = B > 0.04045 ? Math.Pow((B + 0.055) / 1.055, 2.4) : B / 12.92;
+
+                return new CIEXYZ(
+                    // Linear transformation
+                    r * 0.412424 + g * 0.357579 + b * 0.180464,
+                    r * 0.212656 + g * 0.715158 + b * 0.072186,
+                    r * 0.019332 + g * 0.119193 + b * 0.950444,
+                    DataSource ?? this
+                );
+            }
+
+            /**
+             * <inheritdoc />
+             */
+            public override HSV ToHSV()
+            {
+                double r = R / 255;
+                double g = G / 255;
+                double b = B / 255;
+
+                double min = Math.Min (Math.Min (r, g), b);
+                double max = Math.Max (Math.Max (r, g), b);
+
+                double h;
+                double s;
+                double v = max;
+
+                double delta = max - min;
+                if (max == 0 || delta == 0)
+                {
+                    s = 0;
+                    h = 0;
+                }
+                else
+                {
+                    s = delta / max;
+                    if (r == max)
+                        h = (g - b) / delta; // Between Yellow and Magenta
+                    else if (g == max)
+                        h = 2 + (b - r) / delta; // Between Cyan and Yellow
+                    else
+                        h = 4 + (r - g) / delta; // Between Magenta and Cyan
+                }
+                h *= 60;
+                if (h < 0)
+                    h += 360;
+                return new HSV (h, s, v);
+            }
+
+            /**
+             * <inheritdoc />
+             */
+            public override SRGB ToSRGB(ToSmallSpaceStrategy strategy = ToSmallSpaceStrategy.Default)
+            {
+                return this;
+            }
+
+            #endregion
+
+
+            #region Object methods
+
+            /**
 			 * <inheritdoc />
 			 */
-			public override CIEXYZ ToCIEXYZ ()
-			{
-				CIEXYZ xyzDS = DataSource as CIEXYZ;
-				if (xyzDS != null) {
-					return xyzDS;
-				}
+            public override bool Equals(Object obj)
+            {
+                SRGB srgbObj = obj as SRGB;
 
-				// Gamma correction
-				double r = R > 0.04045 ? Math.Pow((R+0.055)/1.055, 2.4) : R/12.92 ;
-				double g = G > 0.04045 ? Math.Pow((G+0.055)/1.055, 2.4) : G/12.92 ;
-				double b = B > 0.04045 ? Math.Pow((B+0.055)/1.055, 2.4) : B/12.92 ;
+                if (srgbObj == this)
+                {
+                    return true;
+                }
+                if (srgbObj == null || GetHashCode() != obj.GetHashCode())
+                {
+                    return false;
+                }
 
-				return new CIEXYZ(
-					// Linear transformation
-					r * 0.412424 + g * 0.357579 + b * 0.180464,
-					r * 0.212656 + g * 0.715158 + b * 0.072186,
-					r * 0.019332 + g * 0.119193 + b * 0.950444,
-					DataSource ?? this
-				);
-			}
+                return (R == srgbObj.R && G == srgbObj.G && B == srgbObj.B);
+            }
 
-			/**
-			 * <inheritdoc />
-			 */
-			public override SRGB ToSRGB (ToSmallSpaceStrategy strategy = ToSmallSpaceStrategy.Default)
-			{
-				return this;
-			}
+            /**
+             * <inheritdoc />
+             */
+            public override int GetHashCode()
+            {
+                int hash = 32399 + R.GetHashCode(); // 32399 == 179 * 181
 
-			#endregion
+                hash = hash * 181 + G.GetHashCode();
 
+                return hash * 181 + B.GetHashCode();
+            }
 
-			#region Object methods
-
-			/**
-			 * <inheritdoc />
-			 */
-			public override bool Equals(Object obj)
-			{
-				SRGB srgbObj = obj as SRGB; 
-
-				if (srgbObj == this) {
-					return true;
-				}
-				if (srgbObj == null || GetHashCode () != obj.GetHashCode ()) {
-					return false;
-				}
-
-				return (R == srgbObj.R && G == srgbObj.G && B == srgbObj.B);
-			}
-
-			/**
-			 * <inheritdoc />
-			 */
-			public override int GetHashCode ()
-			{
-				int hash = 32399 + R.GetHashCode (); // 32399 == 179 * 181
-
-				hash = hash * 181 + G.GetHashCode ();
-
-				return hash * 181 + B.GetHashCode ();
-			}
-
-			#endregion
-		}
-	}
+            #endregion
+        }
+    }
 }
 
 

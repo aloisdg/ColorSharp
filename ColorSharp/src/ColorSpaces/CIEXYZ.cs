@@ -149,6 +149,14 @@ namespace Litipk.ColorSharp
 				);
 			}
 
+            /**
+             * <inheritdoc />
+             */
+		    public override HSV ToHSV()
+		    {
+		        return ToSRGB ().ToHSV ();
+		    }
+
 			/**
 			* <inheritdoc />
 			*/
