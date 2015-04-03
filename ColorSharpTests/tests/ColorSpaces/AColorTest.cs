@@ -32,38 +32,43 @@ using Litipk.ColorSharp.ColorSpaces;
 
 namespace Litipk.ColorSharpTests
 {
-	[TestFixture]
-	public class AColorTest
-	{
-		[Test]
-		public void TestConversionSimpleChains()
-		{
-			// From XYZ
-			Assert.AreEqual (
-				new CIEXYZ (50.0, 60.0, 30.0).ConvertTo<CIExyY> (),
-				new CIEXYZ (50.0, 60.0, 30.0).ConvertTo<SRGB> ().ConvertTo<CIExyY> ()
-			);
+    [TestFixture]
+    public class AColorTest
+    {
+        [Test]
+        public void TestConversionSimpleChains()
+        {
+            // From XYZ
+            Assert.AreEqual(
+                new CIEXYZ(50.0, 60.0, 30.0).ConvertTo<CIExyY>(),
+                new CIEXYZ(50.0, 60.0, 30.0).ConvertTo<SRGB>().ConvertTo<CIExyY>()
+            );
 
-			Assert.AreEqual (
-				new CIEXYZ (50.0, 60.0, 30.0).ConvertTo<SRGB> (),
-				new CIEXYZ (50.0, 60.0, 30.0).ConvertTo<CIExyY> ().ConvertTo<SRGB> ()
-			);
+            Assert.AreEqual(
+                new CIEXYZ(50.0, 60.0, 30.0).ConvertTo<SRGB>(),
+                new CIEXYZ(50.0, 60.0, 30.0).ConvertTo<CIExyY>().ConvertTo<SRGB>()
+            );
 
-			Assert.AreEqual (
-				new CIEXYZ (50.0, 60.0, 30.0).ConvertTo<CIEUCS> (),
-				new CIEXYZ (50.0, 60.0, 30.0).ConvertTo<CIExyY> ().ConvertTo<CIEUCS> ()
-			);
+            Assert.AreEqual(
+                new CIEXYZ(50.0, 60.0, 30.0).ConvertTo<CIEUCS>(),
+                new CIEXYZ(50.0, 60.0, 30.0).ConvertTo<CIExyY>().ConvertTo<CIEUCS>()
+            );
 
-			Assert.AreEqual (
-				new CIEXYZ (50.0, 60.0, 30.0).ConvertTo<CIExyY> (),
-				new CIEXYZ (50.0, 60.0, 30.0).ConvertTo<CIEUCS> ().ConvertTo<CIExyY> ()
-			);
+            Assert.AreEqual(
+                new CIEXYZ(50.0, 60.0, 30.0).ConvertTo<CIExyY>(),
+                new CIEXYZ(50.0, 60.0, 30.0).ConvertTo<CIEUCS>().ConvertTo<CIExyY>()
+            );
 
-			// From xyY
-			Assert.AreEqual (
-				new CIExyY (0.5, 0.5, 1.0).ConvertTo<SRGB>(),
-				new CIExyY (0.5, 0.5, 1.0).ConvertTo<CIEXYZ>().ConvertTo<SRGB>()
-			);
-		}
-	}
+            Assert.AreEqual(
+                new CIEXYZ(50.0, 60.0, 30.0).ConvertTo<HSV>(),
+                new CIEXYZ(50.0, 60.0, 30.0).ConvertTo<SRGB>().ConvertTo<HSV>()
+            );
+
+            // From xyY
+            Assert.AreEqual(
+                new CIExyY(0.5, 0.5, 1.0).ConvertTo<SRGB>(),
+                new CIExyY(0.5, 0.5, 1.0).ConvertTo<CIEXYZ>().ConvertTo<SRGB>()
+            );
+        }
+    }
 }
