@@ -38,25 +38,25 @@ namespace Litipk.ColorSharp
     namespace ColorSpaces
     {
         /**
-         * <summary>HP's and Microsoft's 1996 sRGB Color Space.</summary>
-         */
+        * <summary>HP's and Microsoft's 1996 sRGB Color Space.</summary>
+        */
         public sealed class HSV : AConvertibleColor
         {
             #region private properties
 
             /**
-			 * <value>Hue component</value>
-			 */
+	    * <value>Hue component</value>
+	    */
             public readonly double H;
 
             /**
-             * <value>Saturation component</value>
-             */
+            * <value>Saturation component</value>
+            */
             public readonly double S;
 
             /**
-             * <value>Value component</value>
-             */
+            * <value>Value component</value>
+            */
             public readonly double V;
 
             #endregion
@@ -65,12 +65,12 @@ namespace Litipk.ColorSharp
             #region constructors
 
             /**
-			 * <summary>Creates a new color sample in the HSV color space</summary>
-			 * <param name="H">Hue component (between 0 and 360)</param>
-			 * <param name="S">Saturation component (between 0 and 1)</param>
-			 * <param name="V">Value component (between 0 and 1)</param>
-			 * <param name="dataSource">If you aren't working with ColorSharp internals, don't use this parameter</param>
-			 */
+	    * <summary>Creates a new color sample in the HSV color space</summary>
+	    * <param name="H">Hue component (between 0 and 360)</param>
+	    * <param name="S">Saturation component (between 0 and 1)</param>
+	    * <param name="V">Value component (between 0 and 1)</param>
+	    * <param name="dataSource">If you aren't working with ColorSharp internals, don't use this parameter</param>
+	    */
             public HSV(double H, double S, double V, AConvertibleColor dataSource = null)
                 : base(dataSource)
             {
@@ -85,8 +85,8 @@ namespace Litipk.ColorSharp
             #region AConvertibleColor methods
 
             /**
-			 * <inheritdoc />
-			 */
+	    * <inheritdoc />
+	    */
             public override bool IsInsideColorSpace(bool highPrecision = false)
             {
                 return (
